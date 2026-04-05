@@ -1,0 +1,38 @@
+# ─── Secrets (CRITICAL — never commit) ──────────────────────
+.env
+.env.*
+!.env.example
+.env_credentials_snippet.txt
+*credentials*.json
+*service-account*.json
+*.pem
+*.key
+.ngrok_url
+
+# ─── Python ─────────────────────────────────────────────────
+*.pyc
+__pycache__/
+.pytest_cache/
+.venv/
+venv/
+*.egg-info/
+
+# ─── Node (from docs/ PowerPoint + script generators) ───────
+node_modules/
+package-lock.json
+
+# ─── IDE / OS ───────────────────────────────────────────────
+.DS_Store
+.vscode/
+.idea/
+*.log
+
+# ─── Office lock files ──────────────────────────────────────
+~$*
+
+# ─── Presentation scaffolding (kept locally, not shipped) ───
+docs/create_presentation.js
+docs/create_script.js
+docs/package.json
+docs/presentation.pptx
+docs/presentation_script.docx

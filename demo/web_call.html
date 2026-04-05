@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Observe Insurance Claims Assistant - Live Demo</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #0f172a;
+            color: #e2e8f0;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+        .container {
+            text-align: center;
+            max-width: 500px;
+            padding: 40px;
+        }
+        .logo {
+            font-size: 48px;
+            margin-bottom: 16px;
+        }
+        h1 {
+            font-size: 24px;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: #f8fafc;
+        }
+        .subtitle {
+            color: #94a3b8;
+            margin-bottom: 40px;
+            font-size: 14px;
+        }
+        #call-button {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            border: none;
+            background: #22c55e;
+            color: white;
+            font-size: 48px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 0 30px rgba(34, 197, 94, 0.3);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 16px;
+        }
+        #call-button:hover {
+            transform: scale(1.1);
+            box-shadow: 0 0 50px rgba(34, 197, 94, 0.5);
+        }
+        #call-button.active {
+            background: #ef4444;
+            box-shadow: 0 0 30px rgba(239, 68, 68, 0.3);
+            animation: pulse 2s infinite;
+        }
+        #call-button.active:hover {
+            box-shadow: 0 0 50px rgba(239, 68, 68, 0.5);
+        }
+        @keyframes pulse {
+            0%, 100% { box-shadow: 0 0 30px rgba(239, 68, 68, 0.3); }
+            50% { box-shadow: 0 0 50px rgba(239, 68, 68, 0.5); }
+        }
+        #status {
+            font-size: 16px;
+            color: #94a3b8;
+            margin-bottom: 40px;
+        }
+        .info-box {
+            background: #1e293b;
+            border-radius: 12px;
+            padding: 20px;
+            text-align: left;
+            margin-top: 20px;
+        }
+        .info-box h3 {
+            font-size: 14px;
+            color: #64748b;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 12px;
+        }
+        .info-box p {
+            font-size: 13px;
+            color: #94a3b8;
+            line-height: 1.6;
+            margin-bottom: 4px;
+        }
+        .info-box code {
+            background: #334155;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-size: 12px;
+            color: #22c55e;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="logo">📞</div>
+        <h1>Observe Insurance Claims Assistant</h1>
+        <p class="subtitle">AI-Powered Voice Agent - Live Demo</p>
+
+        <button id="call-button" onclick="toggleCall()">📞</button>
+        <p id="status">Click to start a call</p>
+
+        <div class="info-box">
+            <h3>Test Phone Numbers</h3>
+            <p><code>555-123-4567</code> — Sarah Johnson (pending)</p>
+            <p><code>555-987-6543</code> — Michael Chen (approved)</p>
+            <p><code>555-111-2222</code> — Emily Davis (requires docs)</p>
+            <p><code>555-999-9999</code> — Not found (error path)</p>
+        </div>
+    </div>
+
+    <script type="module">
+        const module = await import("https://cdn.jsdelivr.net/npm/@vapi-ai/web@latest/+esm");
+        const Vapi = module.default.default || module.default;
+
+        const VAPI_PUBLIC_KEY = "c7a2570a-5a7f-4e80-a4d6-97cef9017c49";
+        const ASSISTANT_ID = "b16c0980-023a-486f-988e-0a54def9907c";
+
+        let vapi = null;
+        let callActive = false;
+
+        window.toggleCall = async function() {
+            const btn = document.getElementById('call-button');
+            const status = document.getElementById('status');
+
+            if (!callActive) {
+                try {
+                    if (!vapi) {
+                        vapi = new Vapi(VAPI_PUBLIC_KEY);
+
+                        vapi.on('call-start', () => {
+                            status.textContent = 'Connected - speaking with Alex...';
+                            btn.classList.add('active');
+                            btn.textContent = '\u23f9';
+                            callActive = true;
+                        });
+
+                        vapi.on('call-end', () => {
+                            status.textContent = 'Call ended. Click to call again.';
+                            btn.classList.remove('active');
+                            btn.textContent = '\u{1F4DE}';
+                            callActive = false;
+                        });
+
+                        vapi.on('speech-start', () => {
+                            status.textContent = 'Alex is speaking...';
+                        });
+
+                        vapi.on('speech-end', () => {
+                            status.textContent = 'Listening...';
+                        });
+
+                        vapi.on('error', (error) => {
+                            console.error('VAPI error:', error);
+                            status.textContent = 'Error occurred. Try again.';
+                            btn.classList.remove('active');
+                            btn.textContent = '\u{1F4DE}';
+                            callActive = false;
+                        });
+                    }
+
+                    status.textContent = 'Connecting...';
+                    await vapi.start(ASSISTANT_ID);
+
+                } catch (error) {
+                    console.error('Failed to start call:', error);
+                    status.textContent = 'Failed to connect: ' + (error.message || 'Unknown error');
+                }
+            } else {
+                vapi.stop();
+                status.textContent = 'Ending call...';
+            }
+        };
+    </script>
+</body>
+</html>
