@@ -1,5 +1,13 @@
 # Error/Fallback Path Demo Script
 
+## 📹 Recording
+
+**Watch the demo:** https://share.vidyard.com/watch/JgzcxV6VTMyGjjiucqbB17
+
+This recording shows the graceful error path: greeting → phone number capture → lookup returns "not found" → agent gracefully offers a callback instead of bluffing → warm closing → interaction still logged to Google Sheets with "Unknown" caller and "neutral" sentiment. Demonstrates the no-hallucination guardrail and graceful degradation.
+
+---
+
 ## Setup Before Recording
 1. Ensure `+15559999999` does NOT exist in the customers sheet
 2. Open Google Sheets "interactions" tab in a visible browser tab

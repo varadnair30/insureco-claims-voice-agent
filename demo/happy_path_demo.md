@@ -1,5 +1,13 @@
 # Happy Path Demo Script
 
+## 📹 Recording
+
+**Watch the demo:** https://share.vidyard.com/watch/FQDxx4Lz8HyshyKrDgABfM
+
+This recording shows a complete successful call flow: greeting → phone number capture with digit confirmation → Google Sheets customer lookup → identity confirmation → claim status lookup → FAQ answers → natural call closing → live post-call log appearing in Google Sheets.
+
+---
+
 ## Setup Before Recording
 1. Ensure Google Sheet has a test customer:
    - Phone: `+15551234567`
