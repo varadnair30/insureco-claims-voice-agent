@@ -219,7 +219,7 @@ The confirmation step is critical — it gives the caller a chance to catch mish
 
 3. **Call replay for QA.** Store VAPI call recordings (available via their API) alongside the interaction logs. This enables a weekly QA review where we listen to calls that resulted in escalation and identify prompt improvements.
 
-4. **Webhook signature verification.** Add HMAC signature validation on the `/webhook/vapi` endpoint to ensure requests are genuinely from VAPI, not spoofed.
+4. **Webhook signature verification.** For production deployment, I'd add HMAC signature validation on the `/webhook/vapi` endpoint to ensure requests are genuinely from VAPI and not spoofed. For the current demo environment — running behind an ngrok tunnel with a known, unshared URL — the attack surface is minimal, so I deferred it. Any production deployment behind a stable public DNS would require this on day one.
 
 5. **Caching for repeat callers.** If a customer calls twice in an hour, the second lookup should hit a Redis cache instead of the Sheets API. This reduces latency and API quota consumption.
 
@@ -234,7 +234,7 @@ The confirmation step is critical — it gives the caller a chance to catch mish
 | **Containment Rate** | Calls resolved without human escalation / total calls | >75% | Count calls where no "callback scheduled" appears in summary |
 | **Effective Containment** | Containment rate excluding explicit human requests | >85% | Remove calls where transcript contains "speak to a person" / "representative" |
 | **Authentication Success Rate** | Calls where identity was confirmed / calls where lookup was attempted | >90% | Track lookup_caller tool results (found=true + identity confirmed) |
-| **Average Handle Time (AHT)** | Mean call duration from greeting to hangup | <3 min | VAPI provides call duration in end-of-call-report |
+| **Average Handle Time (AHT)** | Mean call duration from greeting to hangup | < 3 min | VAPI provides call duration in end-of-call-report |
 | **Sentiment Distribution** | % of calls classified as positive / neutral / negative | >50% positive | Aggregate sentiment field from interactions sheet |
 | **FAQ Hit Rate by Topic** | Frequency of each FAQ question asked | — | Parse transcripts for FAQ trigger phrases |
 | **First Call Resolution (FCR)** | Calls where the caller's issue was resolved without needing to call back | >80% | Track unique callers who don't call again within 48 hours |
