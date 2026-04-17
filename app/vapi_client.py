@@ -90,18 +90,19 @@ def handle_end_of_call(payload: dict) -> dict:
                 for m in messages if m.get("content")
             )
 
-    # Extract caller name from transcript (look for identity confirmation)
-    caller_name = _extract_caller_name_from_transcript(transcript, call)
-
     logger.info(
         "end_of_call_processing",
         call_id=call_id,
-        caller=caller_name,
         transcript_length=len(transcript),
     )
 
-    # Generate summary and sentiment from transcript using GPT-4o-mini
+    # Generate caller name, summary, and sentiment from transcript using GPT-4o-mini
     analysis = summarize_call(transcript)
+    caller_name = analysis.get("caller_name", "Unknown")
+
+    # Fallback: if LLM didn't identify a caller, try call metadata or regex on transcript
+    if caller_name == "Unknown":
+        caller_name = _extract_caller_name_from_transcript(transcript, call)
 
     # Log to Google Sheets
     log_interaction(

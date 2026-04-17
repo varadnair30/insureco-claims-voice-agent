@@ -13,11 +13,12 @@ client = OpenAI(api_key=settings.openai_api_key)
 SUMMARIZE_PROMPT = """You are analyzing a customer support call transcript for an insurance claims assistant.
 
 Given the transcript below, provide:
-1. A concise 2-3 sentence summary of what was discussed and the outcome.
-2. The overall sentiment of the caller: "positive", "neutral", or "negative".
+1. The caller's full name if they were successfully authenticated during the call (the assistant confirms the name with a phrase like "am I speaking with ...?" and the caller confirms). If the caller was NOT authenticated or their identity was never confirmed, use "Unknown".
+2. A concise 2-3 sentence summary of what was discussed and the outcome.
+3. The overall sentiment of the caller: "positive", "neutral", or "negative".
 
 Respond in exactly this JSON format (no markdown, no extra text):
-{{"summary": "...", "sentiment": "positive|neutral|negative"}}
+{{"caller_name": "First Last" or "Unknown", "summary": "...", "sentiment": "positive|neutral|negative"}}
 
 Transcript:
 {transcript}"""
@@ -35,7 +36,7 @@ def summarize_call(transcript: str) -> dict:
     """
     if not transcript or not transcript.strip():
         logger.warning("empty_transcript")
-        return {"summary": "Call ended with no transcript available.", "sentiment": "neutral"}
+        return {"caller_name": "Unknown", "summary": "Call ended with no transcript available.", "sentiment": "neutral"}
 
     logger.info("summarizing_call", transcript_length=len(transcript))
 
@@ -59,8 +60,10 @@ def summarize_call(transcript: str) -> dict:
             result["sentiment"] = result["sentiment"].lower().strip()
             if result["sentiment"] not in ("positive", "neutral", "negative"):
                 result["sentiment"] = "neutral"
+            caller_name = result.get("caller_name", "").strip() if result.get("caller_name") else ""
+            result["caller_name"] = caller_name if caller_name else "Unknown"
             return result
     except (json.JSONDecodeError, KeyError):
         logger.error("summarizer_parse_error", raw=raw)
 
-    return {"summary": raw[:500], "sentiment": "neutral"}
+    return {"caller_name": "Unknown", "summary": raw[:500], "sentiment": "neutral"}

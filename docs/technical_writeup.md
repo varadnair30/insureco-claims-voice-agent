@@ -57,7 +57,7 @@ FastAPI was chosen for:
 
 One of the main reasons I chose a custom FastAPI backend over a low-code platform was that every component of the system can be isolated and unit-tested with standard Python tooling. The repository ships with a `pytest` suite of **48 tests across 10 test classes**, all of which pass in under 2 seconds with OpenAI and Google Sheets mocked out (no real network calls):
 
-![48 pytest tests passing in 1.97s](./test_results.png)
+
 
 | Test Class | # Tests | What It Covers |
 |---|---|---|
