@@ -1,4 +1,4 @@
-"""Generate a clean architecture diagram PNG for the Observe Insurance Claims Assistant."""
+"""Generate a clean architecture diagram PNG for the InsureCo Claims Assistant."""
 from PIL import Image, ImageDraw, ImageFont
 from pathlib import Path
 
@@ -96,7 +96,7 @@ def arrow(x1, y1, x2, y2, color=TEAL, width=4, label=None, label_above=True):
 # HEADER
 # ═══════════════════════════════════════════════════════════════
 draw.rectangle([0, 0, W, 120], fill=NAVY_DARK)
-left_text(60, 28, "Observe Insurance Claims Assistant", F_TITLE, fill=WHITE)
+left_text(60, 28, "InsureCo Claims Assistant", F_TITLE, fill=WHITE)
 left_text(62, 88, "Voice AI Agent  |  System Architecture", F_SUBTITLE, fill=(165, 243, 252))
 
 # teal accent bar

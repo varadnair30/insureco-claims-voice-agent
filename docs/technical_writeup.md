@@ -1,4 +1,4 @@
-# Technical Write-Up: Observe Insurance Claims Voice Agent
+# Technical Write-Up: InsureCo Claims Voice Agent
 
 ## Section 1: Tools, Frameworks & Architecture Choices
 
@@ -215,7 +215,7 @@ The confirmation step is critical — it gives the caller a chance to catch mish
 
 1. **STT confidence thresholds.** Deepgram returns a confidence score per utterance. I'd add a threshold check — if confidence < 0.7 on the phone number utterance, ask the caller to repeat rather than attempting a lookup with garbage input. This would reduce false "not found" results.
 
-2. **A/B test greeting variants.** The current greeting is warm but somewhat long. I'd test a shorter variant ("Hi, this is Observe Insurance. What's the phone number on your account?") to see if it reduces average handle time without hurting CSAT.
+2. **A/B test greeting variants.** The current greeting is warm but somewhat long. I'd test a shorter variant ("Hi, this is InsureCo. What's the phone number on your account?") to see if it reduces average handle time without hurting CSAT.
 
 3. **Call replay for QA.** Store VAPI call recordings (available via their API) alongside the interaction logs. This enables a weekly QA review where we listen to calls that resulted in escalation and identify prompt improvements.
 

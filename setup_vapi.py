@@ -31,7 +31,7 @@ def create_assistant(vapi_key: str, server_url: str) -> dict:
     webhook_url = f"{server_url}/webhook/vapi"
 
     assistant_config = {
-        "name": "Observe Insurance Claims Assistant",
+        "name": "InsureCo Claims Assistant",
         "model": {
             "provider": "openai",
             "model": "gpt-4o",
@@ -111,9 +111,9 @@ def create_assistant(vapi_key: str, server_url: str) -> dict:
             "language": "en-US",
             "smartFormat": True,
         },
-        "firstMessage": "Hi, thank you for calling Observe Insurance Claims Support. My name is Alex, and I'm here to help you today. To get started, could you please share the phone number associated with your account?",
+        "firstMessage": "Hi, thank you for calling InsureCo Claims Support. My name is Alex, and I'm here to help you today. To get started, could you please share the phone number associated with your account?",
         "serverUrl": webhook_url,
-        "endCallMessage": "Thank you for calling Observe Insurance. Have a wonderful day!",
+        "endCallMessage": "Thank you for calling InsureCo. Have a wonderful day!",
         "silenceTimeoutSeconds": 30,
         "maxDurationSeconds": 600,
         "endCallPhrases": ["goodbye", "bye", "that's all", "thank you bye"],

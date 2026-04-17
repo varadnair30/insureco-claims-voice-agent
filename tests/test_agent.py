@@ -1,4 +1,4 @@
-"""Comprehensive test suite for the Observe Insurance Claims Voice Agent."""
+"""Comprehensive test suite for the InsureCo Claims Voice Agent."""
 
 import json
 import os

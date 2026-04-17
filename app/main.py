@@ -1,4 +1,4 @@
-"""FastAPI application for Observe Insurance Claims Voice Agent backend."""
+"""FastAPI application for InsureCo Claims Voice Agent backend."""
 
 import structlog
 from fastapi import FastAPI, Request
@@ -31,8 +31,8 @@ structlog.configure(
 logger = structlog.get_logger(__name__)
 
 app = FastAPI(
-    title="Observe Insurance Claims Agent",
-    description="Backend API for the Observe Insurance Claims Voice Assistant",
+    title="InsureCo Claims Agent",
+    description="Backend API for the InsureCo Claims Voice Assistant",
     version="1.0.0",
 )
 

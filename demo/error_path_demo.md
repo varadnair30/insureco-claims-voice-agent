@@ -17,7 +17,7 @@ This recording shows the graceful error path: greeting → phone number capture 
 
 **[Call begins]**
 
-**Agent:** "Hi, thank you for calling Observe Insurance Claims Support. My name is Alex, and I'm here to help you today. To get started, could you please share the phone number associated with your account?"
+**Agent:** "Hi, thank you for calling InsureCo Claims Support. My name is Alex, and I'm here to help you today. To get started, could you please share the phone number associated with your account?"
 
 **Caller:** "Sure, it's 555-999-9999."
 
@@ -33,7 +33,7 @@ This recording shows the graceful error path: greeting → phone number capture 
 
 **Caller:** "No, that's it. Thanks."
 
-**Agent:** "Thank you for calling Observe Insurance. Have a wonderful day!"
+**Agent:** "Thank you for calling InsureCo. Have a wonderful day!"
 
 **[Call ends]**
 

@@ -21,7 +21,7 @@ This recording shows a complete successful call flow: greeting → phone number 
 
 **[Call begins]**
 
-**Agent:** "Hi, thank you for calling Observe Insurance Claims Support. My name is Alex, and I'm here to help you today. To get started, could you please share the phone number associated with your account?"
+**Agent:** "Hi, thank you for calling InsureCo Claims Support. My name is Alex, and I'm here to help you today. To get started, could you please share the phone number associated with your account?"
 
 **Caller:** "Hi, yes — my number is 555-123-4567."
 
@@ -33,7 +33,7 @@ This recording shows a complete successful call flow: greeting → phone number 
 
 **Caller:** "Yeah, actually — what if I need to submit more documents later? How do I do that?"
 
-**Agent:** "Great question. You can submit documents through our online portal at observeinsurance.com/upload, or you can email them directly to support@observeinsurance.com. Either way, they'll be attached to your existing claim."
+**Agent:** "Great question. You can submit documents through our online portal at insureco.com/upload, or you can email them directly to support@insureco.com. Either way, they'll be attached to your existing claim."
 
 **Caller:** "Got it. And what are your office hours in case I need to call back?"
 
@@ -41,7 +41,7 @@ This recording shows a complete successful call flow: greeting → phone number 
 
 **Caller:** "Perfect, that's all I needed. Thanks!"
 
-**Agent:** "You're very welcome, Sarah. Thank you for calling Observe Insurance. Have a wonderful day!"
+**Agent:** "You're very welcome, Sarah. Thank you for calling InsureCo. Have a wonderful day!"
 
 **[Call ends]**
 
