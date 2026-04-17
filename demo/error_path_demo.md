@@ -2,7 +2,7 @@
 
 ## 📹 Recording
 
-**Watch the demo:** https://share.vidyard.com/watch/JgzcxV6VTMyGjjiucqbB17
+**Watch the demo:** https://share.vidyard.com/watch/pwQChg5XaAjpWMgJt2WFzc
 
 This recording shows the graceful error path: greeting → phone number capture → lookup returns "not found" → agent gracefully offers a callback instead of bluffing → warm closing → interaction still logged to Google Sheets with "Unknown" caller and "neutral" sentiment. Demonstrates the no-hallucination guardrail and graceful degradation.
 

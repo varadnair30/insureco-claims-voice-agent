@@ -20,6 +20,8 @@ Built with **VAPI + FastAPI + Google Sheets + GPT-4o**, with a full async backen
 | 🟢 Happy path | Caller authenticates → claim status retrieved → FAQ answered → interaction logged |
 | 🔴 Error path | Number not found → fallback verification → human callback offered → logged as Unknown |
 
+> **Watch the recordings:** [🟢 Happy path](https://share.vidyard.com/watch/NAVCQ5iQ6pvK1EohXBXtCa) · [🔴 Error path](https://share.vidyard.com/watch/pwQChg5XaAjpWMgJt2WFzc)
+>
 > Demo scripts: [happy_path_demo.md](demo/happy_path_demo.md) · [error_path_demo.md](demo/error_path_demo.md)
 
 ---

@@ -2,7 +2,7 @@
 
 ## 📹 Recording
 
-**Watch the demo:** https://share.vidyard.com/watch/FQDxx4Lz8HyshyKrDgABfM
+**Watch the demo:** https://share.vidyard.com/watch/NAVCQ5iQ6pvK1EohXBXtCa
 
 This recording shows a complete successful call flow: greeting → phone number capture with digit confirmation → Google Sheets customer lookup → identity confirmation → claim status lookup → FAQ answers → natural call closing → live post-call log appearing in Google Sheets.
 
