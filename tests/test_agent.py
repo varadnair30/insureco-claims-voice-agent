@@ -533,3 +533,120 @@ class TestVapiWebhookEndpoint:
         )
         assert response.status_code == 500
         assert "error" in response.json()
+
+
+# =========================================================================
+# 11. Auth failure data-leak prevention  (regression guard)
+# =========================================================================
+
+class TestAuthDataLeakPrevention:
+    """Regression guard: a failed lookup must never return claim data to the caller."""
+
+    @patch("app.vapi_client.lookup_customer")
+    def test_wrong_phone_returns_no_claim_data(self, mock_lookup):
+        mock_lookup.return_value = None
+        for phone in ["+10000000000", "+15559999999", "invalid-number"]:
+            payload = {
+                "message": {
+                    "type": "tool-calls",
+                    "toolCalls": [{
+                        "id": "tc_leak",
+                        "function": {
+                            "name": "lookup_caller",
+                            "arguments": {"phone_number": phone},
+                        },
+                    }],
+                }
+            }
+            result_str = handle_tool_call(payload)["results"][0]["result"]
+            assert "claim_status" not in result_str, \
+                f"claim_status leaked for unverified phone {phone}"
+            assert "first_name" not in result_str, \
+                f"first_name leaked for unverified phone {phone}"
+            assert "last_name" not in result_str, \
+                f"last_name leaked for unverified phone {phone}"
+            assert "False" in result_str or "not found" in result_str.lower()
+
+    @patch("app.vapi_client.log_interaction")
+    @patch("app.vapi_client.summarize_call")
+    def test_unauthenticated_caller_logged_as_unknown(self, mock_summarize, mock_log):
+        """End-of-call with no verified caller must log caller_name as Unknown."""
+        mock_summarize.return_value = {
+            "caller_name": "Unknown",
+            "summary": "Caller could not be verified.",
+            "sentiment": "neutral",
+        }
+        mock_log.return_value = True
+
+        payload = {
+            "message": {
+                "type": "end-of-call-report",
+                "call": {"id": "call_unauth"},
+                "artifact": {
+                    "transcript": "assistant: What is your number? user: I do not know."
+                },
+            }
+        }
+        handle_end_of_call(payload)
+        call_kwargs = mock_log.call_args
+        logged_name = (
+            call_kwargs.kwargs.get("caller_name")
+            or call_kwargs[1].get("caller_name")
+        )
+        assert logged_name == "Unknown", \
+            f"Unauthenticated caller logged as '{logged_name}' instead of 'Unknown'"
+
+
+# =========================================================================
+# 12. Summarizer output contract  (regression guard)
+# =========================================================================
+
+class TestSummarizerContractRegression:
+    """Regression guard: summarize_call must always return all required keys with
+    valid values — regardless of transcript content or LLM response quality.
+    If a prompt change breaks the output format, these tests catch it immediately."""
+
+    def test_empty_transcript_has_all_required_keys(self):
+        result = summarize_call("")
+        assert "summary" in result
+        assert "sentiment" in result
+        assert "caller_name" in result
+
+    def test_whitespace_transcript_has_all_required_keys(self):
+        result = summarize_call("   ")
+        assert "summary" in result
+        assert "sentiment" in result
+        assert "caller_name" in result
+
+    @patch("app.summarizer.client")
+    def test_valid_llm_response_has_all_required_keys(self, mock_client):
+        mock_message = MagicMock()
+        mock_message.content = json.dumps({
+            "caller_name": "Jane Doe",
+            "summary": "Caller asked about claim status.",
+            "sentiment": "positive",
+        })
+        mock_client.chat.completions.create.return_value = MagicMock(
+            choices=[MagicMock(message=mock_message)]
+        )
+        result = summarize_call("user: What is my claim? assistant: It is approved.")
+        assert set(result.keys()) >= {"summary", "sentiment", "caller_name"}
+        assert result["sentiment"] in ("positive", "neutral", "negative")
+
+    @patch("app.summarizer.client")
+    def test_malformed_llm_response_has_all_required_keys(self, mock_client):
+        """If the prompt changes and GPT returns garbage, the fallback must still
+        produce all required keys with valid values — no KeyError in callers."""
+        mock_message = MagicMock()
+        mock_message.content = "Sorry, I cannot summarize this call."
+        mock_client.chat.completions.create.return_value = MagicMock(
+            choices=[MagicMock(message=mock_message)]
+        )
+        result = summarize_call("user: hello assistant: hi")
+        assert "summary" in result, "fallback missing 'summary'"
+        assert "sentiment" in result, "fallback missing 'sentiment'"
+        assert "caller_name" in result, "fallback missing 'caller_name'"
+        assert result["sentiment"] in ("positive", "neutral", "negative"), \
+            f"fallback sentiment '{result['sentiment']}' is not a valid value"
+        assert result["caller_name"] == "Unknown", \
+            f"fallback caller_name should be 'Unknown', got '{result['caller_name']}'"
