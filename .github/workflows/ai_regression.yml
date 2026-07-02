@@ -41,7 +41,7 @@ jobs:
           OPENAI_API_KEY: test-key
           GOOGLE_CREDENTIALS_JSON: '{"type":"service_account","project_id":"test"}'
           SPREADSHEET_ID: test-id
-        run: pytest tests/test_agent.py -v --tb=short
+        run: python -m pytest tests/test_agent.py -v --tb=short
 
   # ---------------------------------------------------------------------------
   # Job 2 — AI regression (latency guards for pure-Python functions)
@@ -67,7 +67,7 @@ jobs:
           OPENAI_API_KEY: test-key
           GOOGLE_CREDENTIALS_JSON: '{"type":"service_account","project_id":"test"}'
           SPREADSHEET_ID: test-id
-        run: pytest tests/ai_eval/ -v --tb=short -s
+        run: python -m pytest tests/ai_eval/ -v --tb=short -s
 
       - name: Upload latency report
         uses: actions/upload-artifact@v4
