@@ -31,6 +31,7 @@ package-lock.json
 ~$*
 
 # ─── Presentation scaffolding (kept locally, not shipped) ───
+*.pptx
 docs/create_presentation.js
 docs/create_script.js
 docs/package.json
