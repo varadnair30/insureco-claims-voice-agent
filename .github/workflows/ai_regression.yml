@@ -1,0 +1,78 @@
+# AI Regression + Unit Test CI
+#
+# Runs on every push and PR to main.
+# Two jobs:
+#   unit     — 54 fast offline tests, no external API calls (~2s)
+#   ai-regression — latency regression tests for pure-Python functions (~5s)
+#
+# Approximate cost per full run: $0 — no LLM API calls are made here.
+# Real-LLM eval runs (pytest -m eval) are a future separate job that will
+# require OPENAI_API_KEY and should be gated to PR merges, not every push.
+
+name: Tests
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  # ---------------------------------------------------------------------------
+  # Job 1 — Unit tests (existing 54 tests, always green offline)
+  # ---------------------------------------------------------------------------
+  unit:
+    name: Unit Tests (54)
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.10"
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Run unit tests
+        env:
+          VAPI_API_KEY: test-key
+          OPENAI_API_KEY: test-key
+          GOOGLE_CREDENTIALS_JSON: '{"type":"service_account","project_id":"test"}'
+          SPREADSHEET_ID: test-id
+        run: pytest tests/test_agent.py -v --tb=short
+
+  # ---------------------------------------------------------------------------
+  # Job 2 — AI regression (latency guards for pure-Python functions)
+  # No external APIs needed — runs entirely offline.
+  # ---------------------------------------------------------------------------
+  ai-regression:
+    name: AI Regression (latency guards)
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.10"
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Run AI regression tests
+        env:
+          VAPI_API_KEY: test-key
+          OPENAI_API_KEY: test-key
+          GOOGLE_CREDENTIALS_JSON: '{"type":"service_account","project_id":"test"}'
+          SPREADSHEET_ID: test-id
+        run: pytest tests/ai_eval/ -v --tb=short -s
+
+      - name: Upload latency report
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: latency-report
+          path: tests/ai_eval/
+          retention-days: 30
